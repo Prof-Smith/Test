@@ -1,0 +1,1 @@
+Replace docs/app.js and docs/index.html with these versions, commit, and push to main. The JavaScript syntax error in the prior package is corrected. The HTML also adds cache-busting version strings so GitHub Pages and the browser request the corrected assets.

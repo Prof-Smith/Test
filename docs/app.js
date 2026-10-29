@@ -1,7 +1,14 @@
 'use strict';
 const $=s=>document.querySelector(s), money=x=>'$'+Number(x).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
 const C={navy:'#0b2747',blue:'#197ba6',teal:'#0fa99d',gold:'#e2a72d',orange:'#f2762e',red:'#d94d4d'};
-const erf=x=>{const a1=.254829592,a2=-.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=.3275911,s=x<0?-1:1,t=1/(1+p*Math.abs(x));return s*(1-(((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x)))};
+const erf=x=>{
+  const a1=.254829592,a2=-.284496736,a3=1.421413741,a4=-1.453152027,a5=1.061405429,p=.3275911;
+  const sign=x<0?-1:1;
+  const ax=Math.abs(x);
+  const t=1/(1+p*ax);
+  const poly=((((a5*t+a4)*t+a3)*t+a2)*t+a1)*t;
+  return sign*(1-poly*Math.exp(-ax*ax));
+};
 const N=x=>(1+erf(x/Math.sqrt(2)))/2, phi=x=>Math.exp(-.5*x*x)/Math.sqrt(2*Math.PI);
 function payoff(S,K,kind){return kind==='call'?Math.max(S-K,0):Math.max(K-S,0)}
 function crr(S,K,T,r,sigma,steps,q,kind,american){const dt=T/steps,u=Math.exp(sigma*Math.sqrt(dt)),d=1/u,g=Math.exp((r-q)*dt),p=(g-d)/(u-d),disc=Math.exp(-r*dt);if(!(d<g&&g<u&&p>0&&p<1))throw Error('No-arbitrage condition failed for these inputs.');let v=Array.from({length:steps+1},(_,j)=>payoff(S*u**j*d**(steps-j),K,kind));for(let n=steps-1;n>=0;n--){v=Array.from({length:n+1},(_,j)=>{const hold=disc*(p*v[j+1]+(1-p)*v[j]);return american?Math.max(hold,payoff(S*u**j*d**(n-j),K,kind)):hold})}return {price:v[0],u,d,p,dt}}
