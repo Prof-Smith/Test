@@ -1,10 +1,11 @@
-Option Pricer v3.0.2 calculation-display hotfix
+Option Pricer v3.0.3 input-validation hotfix
 
-Replace docs/app.js and docs/index.html in the repository with these files, commit, and push to main.
+Replace docs/app.js and docs/index.html in the repository, commit, and push to main.
 
-Changes:
-- Adds a prominent recalculated-results strip for CRR, BSM benchmark, intrinsic value, time value, p*, and market difference.
-- Displays caught calculation errors instead of leaving blank panels.
-- Keeps numerical results visible if Plotly fails to load.
-- Adds automatic recalculation after input changes, while retaining the Recalculate button.
-- Adds cache-busting v3.0.2 asset references.
+Root cause corrected:
+The validation function incorrectly applied Number.isFinite() to the option-type string ('call' or 'put'). This caused every otherwise valid input set to fail validation.
+
+Verification completed:
+- JavaScript syntax check passed.
+- The displayed default case (S=96, K=105, T=1, r=4.5%, q=1.2%, volatility=28%, steps=200, call, European) passed the corrected validation test.
+- index.html now requests version 3.0.3 to bypass cached JavaScript.
